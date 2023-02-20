@@ -30,3 +30,50 @@ int main(int argc, char *argv[]) {
 
   return status;
 }
+
+
+
+
+import 'dart:io';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_window_manager/flutter_window_manager.dart';
+
+void main() async {
+  // Set the second screen as the target display
+  final display = ':0.1'; // Change this to the correct display ID
+  Platform.environment['DISPLAY'] = display;
+
+  // Initialize the Flutter app
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Get the current screen size
+  final size = await FlutterWindowManager.getWindowInfo().then((window) => window.size);
+
+  // Create window data and set the target screen
+  final windowData = WindowData(
+    title: 'MyApp',
+    width: size.width,
+    height: size.height,
+    screen: display,
+  );
+
+  // Launch the app with the specified window data
+  runApp(MyApp(windowData: windowData));
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key, required this.windowData}) : super(key: key);
+
+  final WindowData windowData;
+
+  @override
+  Widget build(BuildContext context) {
+    return WidgetsApp(
+      color: Colors.blue,
+      title: windowData.title,
+      builder: (context, _) => Center(
+        child: Text('Hello, world!'),
+      ),
+    );
+  }
+}
