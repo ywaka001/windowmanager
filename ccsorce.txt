@@ -1,0 +1,32 @@
+#include <gtk/gtk.h>
+#include <gdk/gdkx.h>
+
+int main(int argc, char *argv[]) {
+  gtk_init(&argc, &argv);
+
+  // create a new GtkApplication
+  GtkApplication *app = gtk_application_new("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+
+  // connect to the "activate" signal
+  g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
+
+  // get the default screen and display
+  GdkScreen *screen = gdk_screen_get_default();
+  GdkDisplay *display = gdk_screen_get_display(screen);
+
+  // set the display to the second screen
+  GdkDisplay *display2 = gdk_display_open(":1.0");
+  GdkScreen *screen2 = gdk_display_get_default_screen(display2);
+
+  // set the default screen and display to the second screen
+  gdk_screen_set_default(screen2);
+  gdk_display_set_default(display2);
+
+  // run the GtkApplication
+  int status = g_application_run(G_APPLICATION(app), argc, argv);
+
+  // clean up
+  g_object_unref(app);
+
+  return status;
+}
